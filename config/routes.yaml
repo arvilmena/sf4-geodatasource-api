@@ -1,3 +1,6 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+country_api_v1:
+   path: /v1/country
+   controller: App\Controller\Country::index
