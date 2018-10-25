@@ -22,6 +22,11 @@ class City
     private $cc_fips;
 
     /**
+     * @ORM\Column(type="string", length=2)
+     */
+    private $cc_iso;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $full_name_nd;
