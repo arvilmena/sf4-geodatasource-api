@@ -22,6 +22,11 @@ class City
     private $cc_fips;
 
     /**
+     * @ORM\Column(type="string", length=2)
+     */
+    private $cc_iso;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $full_name_nd;
@@ -39,6 +44,18 @@ class City
     public function setCcFips(string $cc_fips): self
     {
         $this->cc_fips = $cc_fips;
+
+        return $this;
+    }
+
+    public function getCcIso(): ?string
+    {
+        return $this->cc_iso;
+    }
+
+    public function setCcIso(string $cc_iso): self
+    {
+        $this->cc_iso = $cc_iso;
 
         return $this;
     }
