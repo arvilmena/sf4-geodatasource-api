@@ -64,7 +64,9 @@ class CityCcIsoColumnGenerateCommand extends Command
         if ( ! $input->getOption('all') ) {
             $city_dql .= " WHERE c.cc_fips != :empty_string";
         }
-        $city_query = $this->em->createQuery($city_dql)->setMaxResults( 20000 );
+        $city_query = $this->em->createQuery($city_dql)
+            // ->setMaxResults( 10 )
+        ;
         if ( ! $input->getOption('all') ) {
             $city_query->setParameter('empty_string', '');
         }
@@ -79,8 +81,9 @@ class CityCcIsoColumnGenerateCommand extends Command
         foreach ($iterableResult as $row) {
             $processed_city++;
             // do stuff with the data in the row, $row[0] is always the object
-            $name = $row[0]->getFullNameNd();
-            $fips = $row[0]->getCcFips();
+            $city = $row[0];
+            $name = $city->getFullNameNd();
+            $fips = $city->getCcFips();
             $io->text( '[' . number_format($processed_city) . '/' . $total_cities_readable . ']' . ' Processing: ' . $name );
             if ( '' === $fips ) {
                 $skipped_city_no_fips++;
@@ -104,6 +107,9 @@ class CityCcIsoColumnGenerateCommand extends Command
                     $io->text('> Country has dashed cc_iso; skipping.');
                 }
                 else {
+                    $city->setCcIso($iso);
+                    $this->em->persist($city);
+                    $this->em->flush();
                     $successful++;
                     $io->text('> ISO detected: ' . $iso);
                 }
