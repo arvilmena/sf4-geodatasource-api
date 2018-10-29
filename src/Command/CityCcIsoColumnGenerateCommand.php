@@ -48,11 +48,10 @@ class CityCcIsoColumnGenerateCommand extends Command
         
         $count_dql = 'select count(c.id) from \App\Entity\City c';
         if ( ! $input->getOption('all') ) {
-            $count_dql .= ' WHERE c.cc_fips != :empty_string';
+            $count_dql .= ' WHERE c.cc_iso = :empty_string';
         }
 
         $count_query = $this->em->createQuery($count_dql);
-
         if ( ! $input->getOption('all') ) {
             $count_query->setParameter('empty_string', '');
         }
@@ -62,7 +61,7 @@ class CityCcIsoColumnGenerateCommand extends Command
         
         $city_dql = "select c from \App\Entity\City c";
         if ( ! $input->getOption('all') ) {
-            $city_dql .= " WHERE c.cc_fips != :empty_string";
+            $city_dql .= " WHERE c.cc_iso = :empty_string";
         }
         $city_query = $this->em->createQuery($city_dql)
             // ->setMaxResults( 10 )
@@ -121,12 +120,14 @@ class CityCcIsoColumnGenerateCommand extends Command
             $this->em->clear();
         }
 
-        $io->success('Total proccessed: ' . number_format( $processed_city ) . '( ' . number_format( $processed_city / $total_cities * 100 , 5 ) . '% )');
+        $processed_percentage = ( $processed_city !== 0 ) ? '(' . number_format( $processed_city / $total_cities * 100 , 5 ) . '% )' : '';
+        $success_percentage = ( $successful !== 0 ) ? '(' . number_format( $successful / $total_cities * 100 , 5 ) . '% )' : '';
+        $io->success('Total proccessed: ' . number_format( $processed_city ) . $processed_percentage );
         $io->text('Skipped City with no cc_fips: ' . number_format( $skipped_city_no_fips ));
         $io->text('Skipped associated Country does not exist: ' . number_format( $skipped_country_nonexistent ));
         $io->text('Skipped Country cc_iso empty: ' . number_format( $skipped_country_iso_empty ));
         $io->text('Skipped Country cc_iso dashed: ' . number_format( $skipped_country_iso_dashed ));
-        $io->success('Successful: ' . number_format( $successful ) . '( ' . number_format( $successful / $total_cities * 100, 5 ) . '% )');
+        $io->success('Successful: ' . number_format( $successful ) . $success_percentage);
 
         $time_end = microtime(true);
         $execution_time = ($time_end - $time_start)/60;
