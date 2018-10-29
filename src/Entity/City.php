@@ -71,4 +71,16 @@ class City
 
         return $this;
     }
+
+    public function getCcIso(): ?string
+    {
+        return $this->cc_iso;
+    }
+
+    public function setCcIso(string $cc_iso): self
+    {
+        $this->cc_iso = $cc_iso;
+
+        return $this;
+    }
 }
